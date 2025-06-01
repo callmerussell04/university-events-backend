@@ -69,13 +69,13 @@ public class UniversityEventsApplication implements CommandLineRunner {
             final var location4 = locationService.create(new LocationEntity("Аудитория 3"));
 			
             log.info("Create default location values");
-			eventService.create(new EventEntity("мероприятие 1", EventStatus.PLANNED, Formatter.parse("2025-06-11"), "организатор", location1, null));
-			eventService.create(new EventEntity("мероприятие 2", EventStatus.PLANNED, Formatter.parse("2025-06-11"), "организатор", location2, null));
-			eventService.create(new EventEntity("мероприятие 3", EventStatus.PLANNED, Formatter.parse("2025-06-12"), "организатор", location1, null));
-			eventService.create(new EventEntity("мероприятие 4", EventStatus.PLANNED, Formatter.parse("2025-06-11"), "организатор", location3, null));
-			eventService.create(new EventEntity("мероприятие 5", EventStatus.PLANNED, Formatter.parse("2025-06-13"), "организатор", location4, null));
-			eventService.create(new EventEntity("мероприятие 6", EventStatus.ACTIVE, Formatter.parse("2025-06-13"), "организатор", location4, null));
-			eventService.create(new EventEntity("мероприятие 7", EventStatus.ACTIVE, Formatter.parse("2025-06-13"), "организатор", location3, null));
+			eventService.create(new EventEntity("мероприятие 1", EventStatus.PLANNED, Formatter.parse("2025-06-11"), Formatter.parse("2025-06-11"), "организатор", location1, null));
+			eventService.create(new EventEntity("мероприятие 2", EventStatus.PLANNED, Formatter.parse("2025-06-11"), Formatter.parse("2025-06-11"), "организатор", location2, null));
+			eventService.create(new EventEntity("мероприятие 3", EventStatus.PLANNED, Formatter.parse("2025-06-12"), Formatter.parse("2025-06-12"), "организатор", location1, null));
+			eventService.create(new EventEntity("мероприятие 4", EventStatus.PLANNED, Formatter.parse("2025-06-11"), Formatter.parse("2025-06-11"), "организатор", location3, null));
+			eventService.create(new EventEntity("мероприятие 5", EventStatus.PLANNED, Formatter.parse("2025-06-13"), Formatter.parse("2025-06-13"), "организатор", location4, null));
+			eventService.create(new EventEntity("мероприятие 6", EventStatus.ACTIVE, Formatter.parse("2025-06-13"), Formatter.parse("2025-06-13"), "организатор", location4, null));
+			eventService.create(new EventEntity("мероприятие 7", EventStatus.ACTIVE, Formatter.parse("2025-06-13"), Formatter.parse("2025-06-13"), "организатор", location3, null));
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.university.university_events.events.api;
 
 import java.text.ParseException;
+import java.util.Date;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,22 +36,27 @@ public class EventController {
 
     private EventDto toDto(EventEntity entity) {
         final EventDto dto = modelMapper.map(entity, EventDto.class);
-        dto.setDate(Formatter.format(entity.getDateTime()));
+        dto.setStartDateTime(Formatter.format(entity.getStartDateTime()));
         return dto;
     }
 
     private EventEntity toEntity(EventDto dto) throws ParseException {
         final EventEntity entity = modelMapper.map(dto, EventEntity.class);
-        entity.setDateTime(Formatter.parse(dto.getDate()));
+        entity.setStartDateTime(Formatter.parse(dto.getStartDateTime()));
         return entity;
     }
     
     @GetMapping
-    public PageDto<EventDto> getAll(
-            @RequestParam(name = "status", defaultValue = "") String status,
-            @RequestParam(name = "locationId", defaultValue = "0") Long locationId,
-            @RequestParam(name = "page", defaultValue = "0") int page) {
-        return PageDtoMapper.toDto(eventService.getAll(status, locationId, page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
+    public PageDto<EventDto> getAll (
+            @RequestParam(name = "status", required = false) String status,
+            @RequestParam(name = "locationId", required = false) Long locationId,
+            @RequestParam(name = "startDate", required = false) String startDateString,
+            @RequestParam(name = "endDate", required = false) String endDateString,
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "page", defaultValue = "0") int page) throws ParseException {
+        Date startDate = startDateString != null ? Formatter.parse(startDateString) : null;
+        Date endDate = endDateString != null ? Formatter.parse(endDateString) : null;
+        return PageDtoMapper.toDto(eventService.getAll(status, locationId, startDate, endDate, name, page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
     }
 
     @GetMapping("/{id}")

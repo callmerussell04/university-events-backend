@@ -35,7 +35,9 @@ public class EventEntity extends BaseEntity {
     @Column(nullable = false)
     private EventStatus status;
     @Column(nullable = false)
-    private Date dateTime;
+    private Date startDateTime;
+    @Column(nullable = false)
+    private Date endDateTime;
     @Column(nullable = false, length = 30)
     private String organizer;
 

@@ -26,7 +26,10 @@ public class EventDto {
     private String status;
 
     @NotBlank
-    private String date;
+    private String startDateTime;
+
+    @NotBlank
+    private String endDateTime;
 
     @NotBlank
     @Size(min = 1, max = 30)
