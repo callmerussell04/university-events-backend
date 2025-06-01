@@ -3,6 +3,8 @@ package com.university.university_events.invitations.service;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,12 @@ public class InvitationService {
     @Transactional(readOnly = true)
     public List<InvitationEntity> getAll() {
         return StreamSupport.stream(repository.findAll(Sort.by("id")).spliterator(), false).toList();
+    }
+
+    
+    @Transactional(readOnly = true)
+    public Page<InvitationEntity> getAll(int page, int size) {
+        return repository.findAll(PageRequest.of(page, size));
     }
 
     @Transactional(readOnly = true)

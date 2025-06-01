@@ -1,7 +1,5 @@
 package com.university.university_events.users.api;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +8,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.university.university_events.core.configuration.Constants;
+import com.university.university_events.core.api.PageDto;
+import com.university.university_events.core.api.PageDtoMapper;
 import com.university.university_events.users.model.UserEntity;
 import com.university.university_events.users.service.UserService;
 
@@ -36,10 +37,10 @@ public class UserController {
     private UserEntity toEntity(UserDto dto) {
         return modelMapper.map(dto, UserEntity.class);
     }
-
     @GetMapping
-    public List<UserDto> getAll() {
-        return userService.getAll().stream().map(this::toDto).toList();
+    public PageDto<UserDto> getAll(
+            @RequestParam(name = "page", defaultValue = "0") int page) {
+        return PageDtoMapper.toDto(userService.getAll(page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
     }
 
     @GetMapping("/{id}")

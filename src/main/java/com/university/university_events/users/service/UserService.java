@@ -3,6 +3,8 @@ package com.university.university_events.users.service;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserEntity> getAll() {
         return StreamSupport.stream(repository.findAll(Sort.by("id")).spliterator(), false).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserEntity> getAll(int page, int size) {
+        return repository.findAll(PageRequest.of(page, size));
     }
 
     @Transactional(readOnly = true)

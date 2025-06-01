@@ -1,7 +1,5 @@
 package com.university.university_events.groups.api;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.university.university_events.core.api.PageDto;
+import com.university.university_events.core.api.PageDtoMapper;
 import com.university.university_events.core.configuration.Constants;
 import com.university.university_events.groups.model.GroupEntity;
 import com.university.university_events.groups.service.GroupService;
@@ -38,8 +39,9 @@ public class GroupController {
     }
 
     @GetMapping
-    public List<GroupDto> getAll() {
-        return groupService.getAll().stream().map(this::toDto).toList();
+    public PageDto<GroupDto> getAll(
+            @RequestParam(name = "page", defaultValue = "0") int page) {
+        return PageDtoMapper.toDto(groupService.getAll(page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
     }
 
     @GetMapping("/{id}")

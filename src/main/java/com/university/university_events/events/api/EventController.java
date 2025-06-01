@@ -1,7 +1,6 @@
 package com.university.university_events.events.api;
 
 import java.text.ParseException;
-import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,8 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.university.university_events.core.api.PageDto;
+import com.university.university_events.core.api.PageDtoMapper;
 import com.university.university_events.core.configuration.Constants;
 import com.university.university_events.core.utils.Formatter;
 import com.university.university_events.events.model.EventEntity;
@@ -42,10 +44,11 @@ public class EventController {
         entity.setDateTime(Formatter.parse(dto.getDate()));
         return entity;
     }
-
+    
     @GetMapping
-    public List<EventDto> getAll() {
-        return eventService.getAll().stream().map(this::toDto).toList();
+    public PageDto<EventDto> getAll(
+            @RequestParam(name = "page", defaultValue = "0") int page) {
+        return PageDtoMapper.toDto(eventService.getAll(page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
     }
 
     @GetMapping("/{id}")
