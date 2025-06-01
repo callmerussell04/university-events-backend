@@ -5,7 +5,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.university.university_events.invitations.api.InvitationDto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,12 +30,12 @@ public class EventDto {
 
     @NotBlank
     @Size(min = 1, max = 30)
-    private String location;
-
-    @NotBlank
-    @Size(min = 1, max = 30)
     private String organizer;
 
+    @NotNull
+    @Min(1)
+    private Long locationId;
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private List<InvitationDto> invitaions;
+    private List<InvitationDto> invitations;
 }
