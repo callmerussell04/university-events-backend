@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.university.university_events.core.error.NotFoundException;
+import com.university.university_events.core.service.AbstractService;
 import com.university.university_events.groups.model.GroupEntity;
 import com.university.university_events.groups.repository.GroupRepository;
 
 @Service
-public class GroupService {
+public class GroupService extends AbstractService<GroupEntity> {
     private final GroupRepository repository;
 
     public GroupService(GroupRepository repository) {
@@ -39,14 +40,13 @@ public class GroupService {
 
     @Transactional
     public GroupEntity create(GroupEntity entity) {
-        if (entity == null) {
-            throw new IllegalArgumentException("Entity is null");
-        }
+        validate(entity, true);
         return repository.save(entity);
     }
 
     @Transactional
     public GroupEntity update(Long id, GroupEntity entity) {
+        validate(entity, false);
         final GroupEntity existsEntity = get(id);
         existsEntity.setName(entity.getName());
         existsEntity.setFaculty(entity.getFaculty());
@@ -58,5 +58,23 @@ public class GroupService {
         final GroupEntity existsEntity = get(id);
         repository.delete(existsEntity);
         return existsEntity;
+    }
+
+    @Override
+    protected void validate(GroupEntity entity, boolean uniqueCheck) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Group entity is null");
+        }
+        validateStringField(entity.getName(), "Group name");
+        if (entity.getFaculty() == null) {
+            throw new IllegalArgumentException("Faculty must not be null");
+        }
+        if (uniqueCheck) {
+            if (repository.findByNameIgnoreCase(entity.getName()).isPresent()) {
+                throw new IllegalArgumentException(
+                        String.format("Group with name %s already exists", entity.getName())
+                );
+            }
+        }
     }
 }

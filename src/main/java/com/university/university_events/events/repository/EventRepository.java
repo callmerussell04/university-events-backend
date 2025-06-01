@@ -1,5 +1,6 @@
 package com.university.university_events.events.repository;
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -13,6 +14,8 @@ import com.university.university_events.events.model.EventStatus;
 
 
 public interface EventRepository extends CrudRepository<EventEntity, Long>, PagingAndSortingRepository<EventEntity, Long> {
+    Optional<EventEntity> findByNameIgnoreCase(String name);
+    
     @Query("""
     SELECT e FROM EventEntity e
     WHERE (:locationId IS NULL OR e.location.id = :locationId)

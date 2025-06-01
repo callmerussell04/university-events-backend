@@ -25,6 +25,8 @@ import lombok.EqualsAndHashCode;
 public class UserEntity extends BaseEntity {
     @Column(nullable = false, unique = true, length = 50)
     private String name;
+    @Column(nullable = false, unique = true)
+    private String email;
     @Column(nullable = false, unique = true, length = 20)
     private String login;
     @Column(nullable = false, unique = true, length = 15)

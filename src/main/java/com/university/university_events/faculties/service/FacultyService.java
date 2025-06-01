@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.university.university_events.core.error.NotFoundException;
+import com.university.university_events.core.service.AbstractService;
 import com.university.university_events.faculties.model.FacultyEntity;
 import com.university.university_events.faculties.repository.FacultyRepository;
 
 @Service
-public class FacultyService {
+public class FacultyService extends AbstractService<FacultyEntity> {
     private final FacultyRepository repository;
 
     public FacultyService(FacultyRepository repository) {
@@ -32,14 +33,13 @@ public class FacultyService {
 
     @Transactional
     public FacultyEntity create(FacultyEntity entity) {
-        if (entity == null) {
-            throw new IllegalArgumentException("Entity is null");
-        }
+        validate(entity, true);
         return repository.save(entity);
     }
 
     @Transactional
     public FacultyEntity update(Long id, FacultyEntity entity) {
+        validate(entity, false);
         final FacultyEntity existsEntity = get(id);
         existsEntity.setName(entity.getName());
         return repository.save(existsEntity);
@@ -50,5 +50,20 @@ public class FacultyService {
         final FacultyEntity existsEntity = get(id);
         repository.delete(existsEntity);
         return existsEntity;
+    }
+
+    @Override
+    protected void validate(FacultyEntity entity, boolean uniqueCheck) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Faculty entity is null");
+        }
+        validateStringField(entity.getName(), "Faculty name");
+        if (uniqueCheck) {
+            if (repository.findByNameIgnoreCase(entity.getName()).isPresent()) {
+                throw new IllegalArgumentException(
+                        String.format("Faculty with name %s already exists", entity.getName())
+                );
+            }
+        }
     }
 }

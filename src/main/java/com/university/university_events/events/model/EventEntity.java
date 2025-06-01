@@ -30,7 +30,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "events")
 public class EventEntity extends BaseEntity {
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String name;
     @Column(nullable = false)
     private EventStatus status;

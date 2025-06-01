@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.university.university_events.core.error.NotFoundException;
+import com.university.university_events.core.service.AbstractService;
 import com.university.university_events.invitations.model.InvitationEntity;
 import com.university.university_events.invitations.repository.InvitationRepository;
 
 @Service
-public class InvitationService {
+public class InvitationService extends AbstractService<InvitationEntity> {
     private final InvitationRepository repository;
 
     public InvitationService(InvitationRepository repository) {
@@ -40,14 +41,13 @@ public class InvitationService {
 
     @Transactional
     public InvitationEntity create(InvitationEntity entity) {
-        if (entity == null) {
-            throw new IllegalArgumentException("Entity is null");
-        }
+        validate(entity, true);
         return repository.save(entity);
     }
 
     @Transactional
     public InvitationEntity update(Long id, InvitationEntity entity) {
+        validate(entity, false);
         final InvitationEntity existsEntity = get(id);
         existsEntity.setStatus(entity.getStatus());
         return repository.save(existsEntity);
@@ -58,5 +58,21 @@ public class InvitationService {
         final InvitationEntity existsEntity = get(id);
         repository.delete(existsEntity);
         return existsEntity;
+    }
+
+    @Override
+    protected void validate(InvitationEntity entity, boolean uniqueCheck) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Invitation entity is null");
+        }
+        if (entity.getUser() == null) {
+            throw new IllegalArgumentException("User must not be null");
+        }
+        if (entity.getEvent() == null) {
+            throw new IllegalArgumentException("Event must not be null");
+        }
+        if (entity.getStatus() == null) {
+            throw new IllegalArgumentException("Status must not be null");
+        }
     }
 }

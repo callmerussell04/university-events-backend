@@ -57,10 +57,10 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			final var group3 = groupService.create(new GroupEntity("ПИбд-33", faculty1));
 
             log.info("Create default user values");
-			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov.i", "+777777777", "1234", UserRole.STUDENT, group1));
-			userService.create(new UserEntity("Сергеев Сергей Сергеевич", "sergeev.s", "+777777778", "1234", UserRole.STUDENT, group2));
-			userService.create(new UserEntity("лох какой-то", "loh.k", "+777777779", "1234", UserRole.STUDENT, group3));
-			userService.create(new UserEntity("нащальник", "boss", "+7777777777", "1234", UserRole.EMPLOYEE, null));
+			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group1));
+			userService.create(new UserEntity("Сергеев Сергей Сергеевич","sergeev@email.com", "sergeev.s", "+777777778", "Qwer1234!", UserRole.STUDENT, group2));
+			userService.create(new UserEntity("лох какой-то","loh@email.com", "loh.k", "+777777779", "Qwer1234!", UserRole.STUDENT, group3));
+			userService.create(new UserEntity("нащальник","boss@email.com", "boss", "+7777777777", "Qwer1234!", UserRole.EMPLOYEE, null));
 		
             log.info("Create default location values");
             final var location1 = locationService.create(new LocationEntity("Тарелка"));
