@@ -47,8 +47,10 @@ public class EventController {
     
     @GetMapping
     public PageDto<EventDto> getAll(
+            @RequestParam(name = "status", defaultValue = "") String status,
+            @RequestParam(name = "locationId", defaultValue = "0") Long locationId,
             @RequestParam(name = "page", defaultValue = "0") int page) {
-        return PageDtoMapper.toDto(eventService.getAll(page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
+        return PageDtoMapper.toDto(eventService.getAll(status, locationId, page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
     }
 
     @GetMapping("/{id}")

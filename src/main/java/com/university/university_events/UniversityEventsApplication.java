@@ -74,6 +74,8 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			eventService.create(new EventEntity("мероприятие 3", EventStatus.PLANNED, Formatter.parse("2025-06-12"), "организатор", location1, null));
 			eventService.create(new EventEntity("мероприятие 4", EventStatus.PLANNED, Formatter.parse("2025-06-11"), "организатор", location3, null));
 			eventService.create(new EventEntity("мероприятие 5", EventStatus.PLANNED, Formatter.parse("2025-06-13"), "организатор", location4, null));
+			eventService.create(new EventEntity("мероприятие 6", EventStatus.ACTIVE, Formatter.parse("2025-06-13"), "организатор", location4, null));
+			eventService.create(new EventEntity("мероприятие 7", EventStatus.ACTIVE, Formatter.parse("2025-06-13"), "организатор", location3, null));
 		}
 	}
 }
