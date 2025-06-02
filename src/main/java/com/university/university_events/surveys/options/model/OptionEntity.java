@@ -1,5 +1,6 @@
 package com.university.university_events.surveys.options.model;
 
+
 import com.university.university_events.core.model.BaseEntity;
 import com.university.university_events.surveys.questions.model.QuestionEntity;
 

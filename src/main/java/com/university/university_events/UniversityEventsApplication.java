@@ -1,5 +1,8 @@
 package com.university.university_events;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -17,6 +20,11 @@ import com.university.university_events.groups.model.GroupEntity;
 import com.university.university_events.groups.service.GroupService;
 import com.university.university_events.locations.model.LocationEntity;
 import com.university.university_events.locations.service.LocationService;
+import com.university.university_events.surveys.answers.api.AnswerDto;
+import com.university.university_events.surveys.model.SurveyEntity;
+import com.university.university_events.surveys.options.model.OptionEntity;
+import com.university.university_events.surveys.questions.model.QuestionEntity;
+import com.university.university_events.surveys.service.SurveyService;
 import com.university.university_events.users.model.UserEntity;
 import com.university.university_events.users.model.UserRole;
 import com.university.university_events.users.service.UserService;
@@ -31,14 +39,16 @@ public class UniversityEventsApplication implements CommandLineRunner {
 	private final UserService userService;
 	private final LocationService locationService;
 	private final EventService eventService;
+	private final SurveyService surveyService;
 
 	public UniversityEventsApplication(FacultyService facultyService, GroupService groupService, UserService userService,
-	LocationService locationService, EventService eventService) {
+	LocationService locationService, EventService eventService, SurveyService surveyService) {
 		this.facultyService = facultyService;
 		this.groupService = groupService;
 		this.userService = userService;
 		this.locationService = locationService;
 		this.eventService = eventService;
+		this.surveyService = surveyService;
 	}
 
 	public static void main(String[] args) {
@@ -57,7 +67,7 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			final var group3 = groupService.create(new GroupEntity("ПИбд-33", faculty1));
 
             log.info("Create default user values");
-			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group1));
+			final var user1 = userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group1));
 			userService.create(new UserEntity("Сергеев Сергей Сергеевич","sergeev@email.com", "sergeev.s", "+777777778", "Qwer1234!", UserRole.STUDENT, group2));
 			userService.create(new UserEntity("лох какой-то","loh@email.com", "loh.k", "+777777779", "Qwer1234!", UserRole.STUDENT, group3));
 			userService.create(new UserEntity("нащальник","boss@email.com", "boss", "+7777777777", "Qwer1234!", UserRole.EMPLOYEE, null));
@@ -68,7 +78,7 @@ public class UniversityEventsApplication implements CommandLineRunner {
             final var location3 = locationService.create(new LocationEntity("Аудитория 2"));
             final var location4 = locationService.create(new LocationEntity("Аудитория 3"));
 			
-            log.info("Create default location values");
+            log.info("Create default event values");
 			eventService.create(new EventEntity("мероприятие 1", EventStatus.PLANNED, Formatter.parse("2025-06-11"), Formatter.parse("2025-06-11"), "организатор", location1, null));
 			eventService.create(new EventEntity("мероприятие 2", EventStatus.PLANNED, Formatter.parse("2025-06-11"), Formatter.parse("2025-06-11"), "организатор", location2, null));
 			eventService.create(new EventEntity("мероприятие 3", EventStatus.PLANNED, Formatter.parse("2025-06-12"), Formatter.parse("2025-06-12"), "организатор", location1, null));
@@ -76,6 +86,40 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			eventService.create(new EventEntity("мероприятие 5", EventStatus.PLANNED, Formatter.parse("2025-06-13"), Formatter.parse("2025-06-13"), "организатор", location4, null));
 			eventService.create(new EventEntity("мероприятие 6", EventStatus.ACTIVE, Formatter.parse("2025-06-13"), Formatter.parse("2025-06-13"), "организатор", location4, null));
 			eventService.create(new EventEntity("мероприятие 7", EventStatus.ACTIVE, Formatter.parse("2025-06-13"), Formatter.parse("2025-06-13"), "организатор", location3, null));
+
+			SurveyEntity surveyEntity = new SurveyEntity();
+			surveyEntity.setName("survey");
+
+			QuestionEntity question = new QuestionEntity();
+			question.setText("?");
+
+			OptionEntity option1 = new OptionEntity();
+			option1.setText("да");
+			OptionEntity option2 = new OptionEntity();
+			option2.setText("нет");
+			List<OptionEntity> options = new ArrayList<OptionEntity>(Arrays.asList(option1, option2));
+			question.setOptions(options);
+
+			List<QuestionEntity> quetions = new ArrayList<QuestionEntity>(Arrays.asList(question));
+			surveyEntity.setQuestions(quetions);
+
+			final var survey1 = surveyService.create(surveyEntity);
+
+			AnswerDto answer1 = new AnswerDto();
+			answer1.setQuestionId(survey1.getQuestions().getFirst().getId());
+			answer1.setUserId(user1.getId());
+			answer1.setOptionId(survey1.getQuestions().getFirst().getOptions().getFirst().getId());
+
+			AnswerDto answer2 = new AnswerDto();
+			answer2.setQuestionId(survey1.getQuestions().getFirst().getId());
+			answer2.setUserId(user1.getId());
+			answer2.setOptionId(survey1.getQuestions().getFirst().getOptions().get(1).getId());
+
+			List<AnswerDto> answerDtos = new ArrayList<AnswerDto>();
+			answerDtos.add(answer1);
+			answerDtos.add(answer2);
+
+			surveyService.submitSurvey(user1.getId(), answerDtos);
 		}
 	}
 }

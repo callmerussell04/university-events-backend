@@ -1,5 +1,8 @@
 package com.university.university_events.surveys.answers.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.university.university_events.core.model.BaseEntity;
 import com.university.university_events.surveys.options.model.OptionEntity;
 import com.university.university_events.surveys.questions.model.QuestionEntity;
@@ -27,14 +30,17 @@ import lombok.EqualsAndHashCode;
 public class AnswerEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "questionId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private QuestionEntity question;
     
     @ManyToOne
     @JoinColumn(name = "userId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity user;
     
     @ManyToOne
     @JoinColumn(name = "optionId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private OptionEntity option;
 
     @Column(length = 100)

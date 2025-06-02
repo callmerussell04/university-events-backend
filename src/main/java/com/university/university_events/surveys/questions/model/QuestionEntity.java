@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.university.university_events.core.model.BaseEntity;
 import com.university.university_events.surveys.model.SurveyEntity;
-import com.university.university_events.users.model.UserEntity;
+import com.university.university_events.surveys.options.model.OptionEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,7 +35,7 @@ public class QuestionEntity extends BaseEntity {
     private SurveyEntity survey;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserEntity> users = new ArrayList<>();
+    private List<OptionEntity> options = new ArrayList<>();
 
     public QuestionEntity(String text, SurveyEntity survey) {
         this.text = text;

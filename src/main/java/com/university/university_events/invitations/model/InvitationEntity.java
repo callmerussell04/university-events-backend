@@ -1,6 +1,9 @@
 package com.university.university_events.invitations.model;
 
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.university.university_events.core.model.BaseEntity;
 import com.university.university_events.events.model.EventEntity;
 import com.university.university_events.users.model.UserEntity;
@@ -27,6 +30,7 @@ import lombok.EqualsAndHashCode;
 public class InvitationEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "userId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity user;
 
     @ManyToOne
