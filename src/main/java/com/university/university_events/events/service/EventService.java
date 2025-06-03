@@ -47,7 +47,7 @@ public class EventService extends AbstractService<EventEntity> {
     public Page<EventEntity> getAll(String statusStr, Long locationId, Date startDate, Date endDate, String name, int page, int size) {
         final Pageable pageRequest = PageRequest.of(page, size);
         EventStatus status = (statusStr != null) ? EventStatus.valueOf(statusStr.toUpperCase()) : null;
-        return repository.findFilteredEvents(locationId, status, startDate, endDate, name, pageRequest);
+        return repository.findFilteredEvents(locationId, status, startDate, endDate, (name != null && !name.isBlank()) ? name.toLowerCase() : "", pageRequest);
     }
 
     @Transactional(readOnly = true)
