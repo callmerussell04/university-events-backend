@@ -1,9 +1,6 @@
 package com.university.university_events.groups.api;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.university.university_events.users.api.UserDto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -27,5 +24,5 @@ public class GroupDto {
     private Long facultyId;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private List<UserDto> users;
+    private String facultyName;
 }

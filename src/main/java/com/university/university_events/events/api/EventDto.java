@@ -40,5 +40,8 @@ public class EventDto {
     private Long locationId;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String locationName;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<InvitationDto> invitations;
 }
