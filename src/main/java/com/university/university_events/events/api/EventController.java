@@ -67,7 +67,7 @@ public class EventController {
             @RequestParam(name = "page", defaultValue = "0") int page) throws ParseException {
         Date startDate = startDateString != null ? Formatter.parse(startDateString) : null;
         Date endDate = endDateString != null ? Formatter.parse(endDateString) : null;
-        return PageDtoMapper.toDto(eventService.getAll(status, locationId, startDate, endDate, name, page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
+        return PageDtoMapper.toDto(eventService.getAll(statusMap.inverse().get(status), locationId, startDate, endDate, name, page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
     }
 
     @GetMapping("/{id}")

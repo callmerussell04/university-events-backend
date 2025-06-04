@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,6 +121,9 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			answerDtos.add(answer2);
 
 			surveyService.submitSurvey(user1.getId(), answerDtos);
-		}
+
+			IntStream.range(11, 100)
+                    .forEach(value -> groupService.create(
+                            new GroupEntity("group-".concat(String.valueOf(value)), faculty1)));	}
 	}
 }
