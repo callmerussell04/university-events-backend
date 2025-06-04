@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.university.university_events.core.api.PageDto;
 import com.university.university_events.core.api.PageDtoMapper;
 import com.university.university_events.core.configuration.Constants;
@@ -28,21 +30,30 @@ import jakarta.validation.Valid;
 public class EventController {
     private final EventService eventService;
     private final ModelMapper modelMapper;
+    BiMap<String, String> statusMap = HashBiMap.create();
 
     public EventController(EventService eventService, ModelMapper modelMapper) {
         this.eventService = eventService;
         this.modelMapper = modelMapper;
+        statusMap.put("PLANNED", "Запланировано");
+        statusMap.put("ACTIVE", "В процессе");
+        statusMap.put("COMPLETED", "Завершено");
+        statusMap.put("CANCELED", "Отменено");
     }
 
     private EventDto toDto(EventEntity entity) {
         final EventDto dto = modelMapper.map(entity, EventDto.class);
+        dto.setStatus(statusMap.get(dto.getStatus()));
         dto.setStartDateTime(Formatter.format(entity.getStartDateTime()));
+        dto.setEndDateTime(Formatter.format(entity.getEndDateTime()));
         return dto;
     }
 
     private EventEntity toEntity(EventDto dto) throws ParseException {
+        dto.setStatus(statusMap.inverse().get(dto.getStatus()));
         final EventEntity entity = modelMapper.map(dto, EventEntity.class);
         entity.setStartDateTime(Formatter.parse(dto.getStartDateTime()));
+        entity.setEndDateTime(Formatter.parse(dto.getEndDateTime()));
         return entity;
     }
     

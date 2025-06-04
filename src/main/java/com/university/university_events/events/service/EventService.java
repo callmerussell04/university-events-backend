@@ -98,6 +98,9 @@ public class EventService extends AbstractService<EventEntity> {
         if (entity.getEndDateTime() == null) {
             throw new IllegalArgumentException("End datetime must not be null");
         }
+        if (entity.getEndDateTime().compareTo(entity.getStartDateTime()) <= 0) {
+            throw new IllegalArgumentException("End datetime must be later that start datetime");
+        }
         if (uniqueCheck) {
             if (repository.findByNameIgnoreCase(entity.getName()).isPresent()) {
                 throw new IllegalArgumentException(
