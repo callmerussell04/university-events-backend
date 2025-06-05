@@ -18,9 +18,15 @@ public class InvitationDto {
     @Min(1)
     private Long userId;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String userName;
+
     @NotNull
     @Min(1)
     private Long eventId;
+    
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String eventName;
 
     @NotBlank
     private String status;

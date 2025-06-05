@@ -1,9 +1,6 @@
 package com.university.university_events.events.api;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.university.university_events.invitations.api.InvitationDto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -41,7 +38,4 @@ public class EventDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String locationName;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private List<InvitationDto> invitations;
 }

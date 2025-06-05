@@ -25,4 +25,7 @@ public class UserDto {
 
     @Min(1)
     private Long groupId;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String groupName;
 }

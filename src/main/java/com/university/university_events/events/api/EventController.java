@@ -2,6 +2,7 @@ package com.university.university_events.events.api;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,6 +69,12 @@ public class EventController {
         Date startDate = startDateString != null ? Formatter.parse(startDateString) : null;
         Date endDate = endDateString != null ? Formatter.parse(endDateString) : null;
         return PageDtoMapper.toDto(eventService.getAll(statusMap.inverse().get(status), locationId, startDate, endDate, name, page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
+    }
+
+    
+    @GetMapping("/no-args")
+    public List<EventDto> getAll() {
+        return eventService.getAll().stream().map(this::toDto).toList();
     }
 
     @GetMapping("/{id}")

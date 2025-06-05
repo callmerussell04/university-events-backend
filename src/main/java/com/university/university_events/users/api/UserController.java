@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.university.university_events.core.configuration.Constants;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.university.university_events.core.api.PageDto;
 import com.university.university_events.core.api.PageDtoMapper;
 import com.university.university_events.users.model.UserEntity;
@@ -24,23 +26,31 @@ import jakarta.validation.Valid;
 public class UserController {
     private final UserService userService;
     private final ModelMapper modelMapper;
+    BiMap<String, String> roleMap = HashBiMap.create();
 
     public UserController(UserService userService, ModelMapper modelMapper) {
         this.userService = userService;
         this.modelMapper = modelMapper;
+        roleMap.put("ADMIN", "Администратор");
+        roleMap.put("EMPLOYEE", "Сотрудник");
+        roleMap.put("STUDENT", "Студент");
     }
 
     private UserDto toDto(UserEntity entity) {
-        return modelMapper.map(entity, UserDto.class);
+        final UserDto dto = modelMapper.map(entity, UserDto.class);
+        dto.setRole(roleMap.get(dto.getRole()));
+        return dto;
     }
 
     private UserEntity toEntity(UserDto dto) {
+        dto.setRole(roleMap.inverse().get(dto.getRole()));
         return modelMapper.map(dto, UserEntity.class);
     }
     @GetMapping
     public PageDto<UserDto> getAll(
+            @RequestParam(name = "role", required = false) String role,
             @RequestParam(name = "page", defaultValue = "0") int page) {
-        return PageDtoMapper.toDto(userService.getAll(page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
+        return PageDtoMapper.toDto(userService.getAll(roleMap.inverse().get(role), page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
     }
 
     @GetMapping("/{id}")

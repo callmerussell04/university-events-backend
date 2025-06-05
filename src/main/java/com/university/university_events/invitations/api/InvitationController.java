@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.university.university_events.core.api.PageDto;
 import com.university.university_events.core.api.PageDtoMapper;
 import com.university.university_events.core.configuration.Constants;
@@ -24,24 +26,31 @@ import jakarta.validation.Valid;
 public class InvitationController {
     private final InvitationService invitationService;
     private final ModelMapper modelMapper;
+    BiMap<String, String> statusMap = HashBiMap.create();
 
     public InvitationController(InvitationService invitationService, ModelMapper modelMapper) {
         this.invitationService = invitationService;
         this.modelMapper = modelMapper;
+        statusMap.put("ATTENDED", "Посетил");
+        statusMap.put("NOT_ATTENDED", "Не посетил");
     }
 
     private InvitationDto toDto(InvitationEntity entity) {
-        return modelMapper.map(entity, InvitationDto.class);
+        final InvitationDto dto = modelMapper.map(entity, InvitationDto.class);
+        dto.setStatus(statusMap.get(dto.getStatus()));
+        return dto;
     }
 
     private InvitationEntity toEntity(InvitationDto dto) {
+        dto.setStatus(statusMap.inverse().get(dto.getStatus()));
         return modelMapper.map(dto, InvitationEntity.class);
     }
 
     @GetMapping
     public PageDto<InvitationDto> getAll(
+            @RequestParam(name = "eventId", defaultValue = "0") Long eventId,
             @RequestParam(name = "page", defaultValue = "0") int page) {
-        return PageDtoMapper.toDto(invitationService.getAll(page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
+        return PageDtoMapper.toDto(invitationService.getAll(eventId, page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
     }
 
     @GetMapping("/{id}")

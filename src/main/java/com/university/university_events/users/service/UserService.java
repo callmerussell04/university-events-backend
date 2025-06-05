@@ -7,8 +7,8 @@ import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +16,7 @@ import com.university.university_events.core.configuration.Constants;
 import com.university.university_events.core.error.NotFoundException;
 import com.university.university_events.core.service.AbstractService;
 import com.university.university_events.users.model.UserEntity;
+import com.university.university_events.users.model.UserRole;
 import com.university.university_events.users.repository.UserRepository;
 
 @Service
@@ -27,13 +28,22 @@ public class UserService extends AbstractService<UserEntity> {
     }
 
     @Transactional(readOnly = true)
-    public List<UserEntity> getAll() {
-        return StreamSupport.stream(repository.findAll(Sort.by("id")).spliterator(), false).toList();
+    public List<UserEntity> getAll(String role) {
+        if (role.isBlank() || role == null) {
+            return StreamSupport.stream(repository.findAll().spliterator(), false).toList();
+        } else {
+            return repository.findByRole(UserRole.valueOf(role));
+        }
     }
 
     @Transactional(readOnly = true)
-    public Page<UserEntity> getAll(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size));
+    public Page<UserEntity> getAll(String role, int page, int size) {
+        final Pageable pageRequest = PageRequest.of(page, size);
+        if (role.isBlank() || role == null) {
+            return repository.findAll(PageRequest.of(page, size));
+        } else {
+            return repository.findByRole(UserRole.valueOf(role), pageRequest);
+        }
     }
 
     @Transactional(readOnly = true)

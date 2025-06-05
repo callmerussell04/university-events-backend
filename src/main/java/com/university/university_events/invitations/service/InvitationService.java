@@ -5,7 +5,7 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +23,23 @@ public class InvitationService extends AbstractService<InvitationEntity> {
     }
 
     @Transactional(readOnly = true)
-    public List<InvitationEntity> getAll() {
-        return StreamSupport.stream(repository.findAll(Sort.by("id")).spliterator(), false).toList();
+    public List<InvitationEntity> getAll(Long eventId) {
+        if (eventId <= 0L) {
+            return StreamSupport.stream(repository.findAll().spliterator(), false).toList();
+        } else {
+            return repository.findByEventId(eventId);
+        }
     }
 
     
     @Transactional(readOnly = true)
-    public Page<InvitationEntity> getAll(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size));
+    public Page<InvitationEntity> getAll(Long eventId, int page, int size) {
+        final Pageable pageRequest = PageRequest.of(page, size);
+        if (eventId <= 0L) {
+            return repository.findAll(PageRequest.of(page, size));
+        } else {
+            return repository.findByEventId(eventId, pageRequest);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -49,6 +58,8 @@ public class InvitationService extends AbstractService<InvitationEntity> {
     public InvitationEntity update(Long id, InvitationEntity entity) {
         validate(entity, false);
         final InvitationEntity existsEntity = get(id);
+        existsEntity.setUser(entity.getUser());
+        existsEntity.setEvent(entity.getEvent());
         existsEntity.setStatus(entity.getStatus());
         return repository.save(existsEntity);
     }
