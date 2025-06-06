@@ -1,5 +1,7 @@
 package com.university.university_events.groups.api;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +44,11 @@ public class GroupController {
     public PageDto<GroupDto> getAll(
             @RequestParam(name = "page", defaultValue = "0") int page) {
         return PageDtoMapper.toDto(groupService.getAll(page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
+    }
+
+    @GetMapping("/no-pages")
+    public List<GroupDto> getAll() {
+        return groupService.getAll().stream().map(this::toDto).toList();
     }
 
     @GetMapping("/{id}")

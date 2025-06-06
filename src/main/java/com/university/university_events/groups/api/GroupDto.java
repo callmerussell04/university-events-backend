@@ -2,6 +2,7 @@ package com.university.university_events.groups.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,11 @@ public class GroupDto {
     @NotBlank
     @Size(min = 1, max = 30)
     private String name;
+
+    @NotNull
+    @Min(1)
+    @Max(6)
+    private int course;
 
     @NotNull
     @Min(1)

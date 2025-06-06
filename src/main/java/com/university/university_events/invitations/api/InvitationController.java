@@ -1,6 +1,10 @@
 package com.university.university_events.invitations.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +20,14 @@ import com.google.common.collect.HashBiMap;
 import com.university.university_events.core.api.PageDto;
 import com.university.university_events.core.api.PageDtoMapper;
 import com.university.university_events.core.configuration.Constants;
+import com.university.university_events.events.model.EventEntity;
+import com.university.university_events.events.service.EventService;
+import com.university.university_events.groups.model.GroupEntity;
+import com.university.university_events.groups.service.GroupService;
+import com.university.university_events.invitations.model.InvitationStatus;
 import com.university.university_events.invitations.model.InvitationEntity;
 import com.university.university_events.invitations.service.InvitationService;
+import com.university.university_events.users.model.UserEntity;
 
 import jakarta.validation.Valid;
 
@@ -25,14 +35,18 @@ import jakarta.validation.Valid;
 @RequestMapping(Constants.API_URL + "/invitation")
 public class InvitationController {
     private final InvitationService invitationService;
+    private final GroupService groupService;
+    private final EventService eventService;
     private final ModelMapper modelMapper;
     BiMap<String, String> statusMap = HashBiMap.create();
 
-    public InvitationController(InvitationService invitationService, ModelMapper modelMapper) {
+    public InvitationController(InvitationService invitationService, ModelMapper modelMapper, GroupService groupService, EventService eventService) {
         this.invitationService = invitationService;
         this.modelMapper = modelMapper;
         statusMap.put("ATTENDED", "Посетил");
         statusMap.put("NOT_ATTENDED", "Не посетил");
+        this.groupService = groupService;
+        this.eventService = eventService;
     }
 
     private InvitationDto toDto(InvitationEntity entity) {
@@ -61,6 +75,34 @@ public class InvitationController {
     @PostMapping
     public InvitationDto create(@RequestBody @Valid InvitationDto dto) {
         return toDto(invitationService.create(toEntity(dto)));
+    }
+
+    @PostMapping("/invite-group")
+    public ResponseEntity<String> inviteGroup(@RequestBody @Valid GroupInvitationDto dto) {
+        EventEntity eventEntity = eventService.get(dto.getEventId());
+        List<UserEntity> students = groupService.get(dto.getGroupId()).getUsers();
+        List<InvitationEntity> invitations = new ArrayList<>();
+        for (UserEntity userEntity : students) {
+            invitations.add(new InvitationEntity(userEntity, eventEntity, InvitationStatus.NOT_ATTENDED));
+        }
+        invitationService.create(invitations);
+        return ResponseEntity.ok("Сохранено " + invitations.size() + " записей");
+    }
+
+    @PostMapping("/invite-course")
+    public ResponseEntity<String> inviteCourse(@RequestBody @Valid CourseInvitationDto dto) {
+        EventEntity eventEntity = eventService.get(dto.getEventId());
+        List<GroupEntity> groups = groupService.findByFacultyAndCourse(dto.getFacultyId(), dto.getCourse());
+        List<UserEntity> students = new ArrayList<>();
+        for (GroupEntity groupEntity : groups) {
+            students.addAll(groupEntity.getUsers());
+        }
+        List<InvitationEntity> invitations = new ArrayList<>();
+        for (UserEntity userEntity : students) {
+            invitations.add(new InvitationEntity(userEntity, eventEntity, InvitationStatus.NOT_ATTENDED));
+        }
+        invitationService.create(invitations);
+        return ResponseEntity.ok("Сохранено " + invitations.size() + " записей");
     }
 
     @PutMapping("/{id}")

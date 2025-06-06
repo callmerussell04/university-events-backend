@@ -33,6 +33,11 @@ public class GroupService extends AbstractService<GroupEntity> {
     }
 
     @Transactional(readOnly = true)
+    public List<GroupEntity> findByFacultyAndCourse(Long facultyId, int course) {
+        return repository.findByFacultyIdAndCourse(facultyId, course);
+    }
+
+    @Transactional(readOnly = true)
     public GroupEntity get(long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(GroupEntity.class, id));
@@ -49,6 +54,7 @@ public class GroupService extends AbstractService<GroupEntity> {
         validate(entity, false);
         final GroupEntity existsEntity = get(id);
         existsEntity.setName(entity.getName());
+        existsEntity.setCourse(entity.getCourse());
         existsEntity.setFaculty(entity.getFaculty());
         return repository.save(existsEntity);
     }
@@ -66,6 +72,9 @@ public class GroupService extends AbstractService<GroupEntity> {
             throw new IllegalArgumentException("Group entity is null");
         }
         validateStringField(entity.getName(), "Group name");
+        if (entity.getCourse() < 1 || entity.getCourse() > 6) {
+            throw new IllegalArgumentException("Course can't < 1 or > 6 ");
+        }
         if (entity.getFaculty() == null) {
             throw new IllegalArgumentException("Faculty must not be null");
         }

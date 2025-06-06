@@ -1,6 +1,6 @@
 package com.university.university_events.invitations.model;
 
-public enum InvitaionStatus {
+public enum InvitationStatus {
     ATTENDED,
     NOT_ATTENDED;
 }

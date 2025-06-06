@@ -14,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -30,6 +29,9 @@ public class GroupEntity extends BaseEntity {
     @Column(nullable = false, unique = true, length = 50)
     private String name;
 
+    @Column(nullable = false, columnDefinition = "int check(course >= 1 and course <= 6)")
+    private int course;
+
     @ManyToOne
     @JoinColumn(name = "facultyId")
     private FacultyEntity faculty;
@@ -37,8 +39,9 @@ public class GroupEntity extends BaseEntity {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserEntity> users = new ArrayList<>();
 
-    public GroupEntity(String name, FacultyEntity faculty) {
+    public GroupEntity(String name, int course, FacultyEntity faculty) {
         this.name = name;
+        this.course = course;
         this.faculty = faculty;
     }
 }

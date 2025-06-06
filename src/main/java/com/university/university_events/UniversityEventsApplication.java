@@ -63,9 +63,9 @@ public class UniversityEventsApplication implements CommandLineRunner {
             final var faculty1 = facultyService.create(new FacultyEntity("ФИСТ"));
 
             log.info("Create default group values");
-			final var group1 = groupService.create(new GroupEntity("ПИбд-31", faculty1));
-			final var group2 = groupService.create(new GroupEntity("ПИбд-32", faculty1));
-			final var group3 = groupService.create(new GroupEntity("ПИбд-33", faculty1));
+			final var group1 = groupService.create(new GroupEntity("ПИбд-31", 3, faculty1));
+			final var group2 = groupService.create(new GroupEntity("ПИбд-32",3,  faculty1));
+			final var group3 = groupService.create(new GroupEntity("ПИбд-33", 3, faculty1));
 
             log.info("Create default user values");
 			final var user1 = userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group1));
@@ -124,6 +124,6 @@ public class UniversityEventsApplication implements CommandLineRunner {
 
 			IntStream.range(11, 100)
                     .forEach(value -> groupService.create(
-                            new GroupEntity("group-".concat(String.valueOf(value)), faculty1)));	}
+                            new GroupEntity("group-".concat(String.valueOf(value)), 1, faculty1)));	}
 	}
 }

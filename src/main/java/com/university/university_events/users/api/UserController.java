@@ -1,5 +1,7 @@
 package com.university.university_events.users.api;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +53,12 @@ public class UserController {
             @RequestParam(name = "role", required = false) String role,
             @RequestParam(name = "page", defaultValue = "0") int page) {
         return PageDtoMapper.toDto(userService.getAll(roleMap.inverse().get(role), page, Constants.DEFUALT_PAGE_SIZE), this::toDto);
+    }
+
+    @GetMapping("/no-pages")
+    public List<UserDto> getAll(
+            @RequestParam(name = "role", required = false) String role) {
+        return userService.getAll(roleMap.inverse().get(role)).stream().map(this::toDto).toList();
     }
 
     @GetMapping("/{id}")

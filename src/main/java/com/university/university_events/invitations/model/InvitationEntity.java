@@ -13,7 +13,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -38,5 +37,5 @@ public class InvitationEntity extends BaseEntity {
     private EventEntity event;
 
     @Column(nullable = false)
-    private InvitaionStatus status;
+    private InvitationStatus status;
 }

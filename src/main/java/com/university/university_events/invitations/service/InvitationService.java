@@ -51,7 +51,18 @@ public class InvitationService extends AbstractService<InvitationEntity> {
     @Transactional
     public InvitationEntity create(InvitationEntity entity) {
         validate(entity, true);
+        if(repository.existsByUserAndEvent(entity.getUser(), entity.getEvent())) 
+            throw new IllegalArgumentException("this invitation already exists");
         return repository.save(entity);
+    }
+
+    @Transactional
+    public void create(List<InvitationEntity> entityList) {
+        entityList.removeIf(invitation -> {
+            validate(invitation, true);
+            return repository.existsByUserAndEvent(invitation.getUser(), invitation.getEvent());
+        });
+        repository.saveAll(entityList);
     }
 
     @Transactional

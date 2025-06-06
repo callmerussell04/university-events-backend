@@ -29,7 +29,7 @@ public class UserService extends AbstractService<UserEntity> {
 
     @Transactional(readOnly = true)
     public List<UserEntity> getAll(String role) {
-        if (role.isBlank() || role == null) {
+        if (role == null || role.isBlank()) {
             return StreamSupport.stream(repository.findAll().spliterator(), false).toList();
         } else {
             return repository.findByRole(UserRole.valueOf(role));
@@ -39,7 +39,7 @@ public class UserService extends AbstractService<UserEntity> {
     @Transactional(readOnly = true)
     public Page<UserEntity> getAll(String role, int page, int size) {
         final Pageable pageRequest = PageRequest.of(page, size);
-        if (role.isBlank() || role == null) {
+        if (role == null || role.isBlank()) {
             return repository.findAll(PageRequest.of(page, size));
         } else {
             return repository.findByRole(UserRole.valueOf(role), pageRequest);
