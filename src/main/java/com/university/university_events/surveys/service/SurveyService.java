@@ -18,6 +18,7 @@ import com.university.university_events.core.service.AbstractService;
 import com.university.university_events.surveys.answers.api.AnswerDto;
 import com.university.university_events.surveys.answers.model.AnswerEntity;
 import com.university.university_events.surveys.answers.repository.AnswerRepository;
+import com.university.university_events.surveys.api.SubmitSurveyDto;
 import com.university.university_events.surveys.model.SurveyEntity;
 import com.university.university_events.surveys.options.model.OptionEntity;
 import com.university.university_events.surveys.options.repository.OptionRepository;
@@ -103,7 +104,8 @@ public class SurveyService extends AbstractService<SurveyEntity> {
     }
 
     @Transactional
-    public void submitSurvey(Long userId, List<AnswerDto> answerDtoList) {
+    public void submitSurvey(SubmitSurveyDto submitSurveyDto) {
+        List<AnswerDto> answerDtoList = submitSurveyDto.getAnswers();
         final Set<Long> questionIds = answerDtoList.stream()
                 .map(AnswerDto::getQuestionId)
                 .collect(Collectors.toSet());
@@ -117,7 +119,7 @@ public class SurveyService extends AbstractService<SurveyEntity> {
         final Map<Long, OptionEntity> options = getOptionsByIds(optionIds).stream()
                 .collect(Collectors.toMap(OptionEntity::getId, Function.identity()));
 
-        UserEntity user = userService.get(userId);
+        UserEntity user = userService.get(submitSurveyDto.getUserId());
 
         List<AnswerEntity> answerEntitiesList = new ArrayList<AnswerEntity>();
 

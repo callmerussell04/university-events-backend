@@ -3,13 +3,13 @@ package com.university.university_events.surveys.api;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.university.university_events.core.configuration.Constants;
@@ -58,7 +58,8 @@ public class SurveyController {
     }
 
     @PostMapping("/take-survey")
-    public void submitSurvey(@RequestParam(name = "userId") Long userId, @RequestBody @Valid SubmitSurveyDto dto) {
-        surveyService.submitSurvey(userId, dto.getAnswers());
+    public ResponseEntity<String> submitSurvey(@RequestBody @Valid SubmitSurveyDto dto) {
+        surveyService.submitSurvey(dto);
+        return ResponseEntity.ok("Сохранено " + dto.getAnswers().size() + " записей");
     }
 }
