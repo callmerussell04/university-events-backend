@@ -13,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.university.university_events.events.model.EventEntity;
 import com.university.university_events.events.model.EventStatus;
@@ -35,6 +36,7 @@ import com.university.university_events.core.utils.Formatter;
 @SpringBootApplication
 @EnableCaching
 @EnableAsync
+@EnableScheduling
 public class UniversityEventsApplication implements CommandLineRunner {
 	private final Logger log = LoggerFactory.getLogger(UniversityEventsApplication.class);
 
@@ -89,8 +91,8 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			eventService.create(new EventEntity("мероприятие 3", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-12 10:00"), Formatter.parseWithTime("2025-06-12 11:30"), "организатор", location1, null));
 			eventService.create(new EventEntity("мероприятие 4", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-11 10:00"), Formatter.parseWithTime("2025-06-11 10:40"), "организатор", location3, null));
 			eventService.create(new EventEntity("мероприятие 5", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-13 10:00"), Formatter.parseWithTime("2025-06-13 10:40"), "организатор", location4, null));
-			eventService.create(new EventEntity("мероприятие 6", EventStatus.ACTIVE, Formatter.parseWithTime("2025-06-13 10:00"), Formatter.parseWithTime("2025-06-13 10:30"), "организатор", location4, null));
-			eventService.create(new EventEntity("мероприятие 7", EventStatus.ACTIVE, Formatter.parseWithTime("2025-06-13 10:00"), Formatter.parseWithTime("2025-06-13 10:50"), "организатор", location3, null));
+			eventService.create(new EventEntity("мероприятие 6", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-13 10:00"), Formatter.parseWithTime("2025-06-13 10:30"), "организатор", location4, null));
+			eventService.create(new EventEntity("мероприятие 7", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-13 10:00"), Formatter.parseWithTime("2025-06-13 10:50"), "организатор", location3, null));
 
 			SurveyEntity surveyEntity = new SurveyEntity();
 			surveyEntity.setName("анкета 1");

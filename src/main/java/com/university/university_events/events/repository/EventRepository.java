@@ -48,4 +48,7 @@ public interface EventRepository extends CrudRepository<EventEntity, Long>, Pagi
           @Param("startDate") Date startDate,
           @Param("endDate") Date endDate
     );
+
+    List<EventEntity> findByStatusAndStartDateTimeBefore(EventStatus status, Date dateTime);
+    List<EventEntity> findByStatusInAndEndDateTimeBefore(List<EventStatus> statuses, Date dateTime);
 }
