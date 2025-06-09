@@ -16,6 +16,10 @@ public interface InvitationRepository extends CrudRepository<InvitationEntity, L
     List<InvitationEntity> findByEventId(long eventId);
 
     Page<InvitationEntity> findByEventId(long eventId, Pageable pageable);
+
+    List<InvitationEntity> findByUserId(long userId);
+
+    Page<InvitationEntity> findByUserId(long userId, Pageable pageable);
     
     boolean existsByUserAndEvent(UserEntity user, EventEntity event);
 }

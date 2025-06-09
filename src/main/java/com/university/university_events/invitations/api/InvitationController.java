@@ -20,6 +20,8 @@ import com.google.common.collect.HashBiMap;
 import com.university.university_events.core.api.PageDto;
 import com.university.university_events.core.api.PageDtoMapper;
 import com.university.university_events.core.configuration.Constants;
+import com.university.university_events.core.utils.Formatter;
+import com.university.university_events.events.api.EventDto;
 import com.university.university_events.events.model.EventEntity;
 import com.university.university_events.events.service.EventService;
 import com.university.university_events.groups.model.GroupEntity;
@@ -39,6 +41,7 @@ public class InvitationController {
     private final EventService eventService;
     private final ModelMapper modelMapper;
     BiMap<String, String> statusMap = HashBiMap.create();
+    BiMap<String, String> eventStatusMap = HashBiMap.create();
 
     public InvitationController(InvitationService invitationService, ModelMapper modelMapper, GroupService groupService, EventService eventService) {
         this.invitationService = invitationService;
@@ -47,6 +50,25 @@ public class InvitationController {
         statusMap.put("NOT_ATTENDED", "Не посетил");
         this.groupService = groupService;
         this.eventService = eventService;
+        eventStatusMap.put("PLANNED", "Запланировано");
+        eventStatusMap.put("ACTIVE", "В процессе");
+        eventStatusMap.put("COMPLETED", "Завершено");
+        eventStatusMap.put("CANCELED", "Отменено");
+    }
+
+    private EventDto toEventDto(EventEntity entity) {
+        final EventDto dto = modelMapper.map(entity, EventDto.class);
+        dto.setStatus(eventStatusMap.get(dto.getStatus()));
+        dto.setStartDateTime(Formatter.formatWithTime(entity.getStartDateTime()));
+        dto.setEndDateTime(Formatter.formatWithTime(entity.getEndDateTime()));
+        return dto;
+    }
+
+    private InvitationWithEventDto toInvitationWithEventDto(InvitationEntity entity) {
+        final InvitationWithEventDto dto = modelMapper.map(entity, InvitationWithEventDto.class);
+        dto.setStatus(statusMap.get(dto.getStatus()));
+        dto.setEvent(toEventDto(entity.getEvent()));
+        return dto;
     }
 
     private InvitationDto toDto(InvitationEntity entity) {
@@ -113,5 +135,12 @@ public class InvitationController {
     @DeleteMapping("/{id}")
     public InvitationDto delete(@PathVariable(name = "id") Long id) {
         return toDto(invitationService.delete(id));
+    }
+
+    @GetMapping("/by-user/{userId}")
+    public PageDto<InvitationWithEventDto> getInvitationsByUserId(
+            @PathVariable(name = "userId") Long userId,
+            @RequestParam(name = "page", defaultValue = "0") int page) {
+        return PageDtoMapper.toDto(invitationService.getInvitationsByUserId(userId, page, Constants.DEFUALT_PAGE_SIZE), this::toInvitationWithEventDto);
     }
 }

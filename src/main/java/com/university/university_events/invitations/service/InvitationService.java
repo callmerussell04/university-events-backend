@@ -82,6 +82,23 @@ public class InvitationService extends AbstractService<InvitationEntity> {
         return existsEntity;
     }
 
+    @Transactional(readOnly = true)
+    public List<InvitationEntity> getInvitationsByUserId(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
+        return repository.findByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<InvitationEntity> getInvitationsByUserId(Long userId, int page, int size) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
+        final Pageable pageRequest = PageRequest.of(page, size);
+        return repository.findByUserId(userId, pageRequest);
+    }
+
     @Override
     protected void validate(InvitationEntity entity, boolean uniqueCheck) {
         if (entity == null) {
