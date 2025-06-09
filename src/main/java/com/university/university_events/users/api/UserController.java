@@ -47,10 +47,25 @@ public class UserController {
         return dto;
     }
 
+    private String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        StringBuilder sb = new StringBuilder(length);
+        java.util.Random random = new java.util.Random();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
     private UserEntity toEntity(UserDto dto) {
         dto.setRole(roleMap.inverse().get(dto.getRole()));
+        if (dto.getPassword() == null || dto.getPassword().isEmpty())
+            dto.setPassword(generateRandomPassword(10));
+        dto.setPassword(
+                passwordEncoder.encode(dto.getPassword().strip()));
         return modelMapper.map(dto, UserEntity.class);
     }
+
     @GetMapping
     public PageDto<UserDto> getAll(
             @RequestParam(name = "role", required = false) String role,
@@ -71,8 +86,6 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@RequestBody @Valid UserDto dto) {
-        dto.setPassword(
-                passwordEncoder.encode(dto.getPassword().strip()));
         return toDto(userService.create(toEntity(dto)));
     }
 

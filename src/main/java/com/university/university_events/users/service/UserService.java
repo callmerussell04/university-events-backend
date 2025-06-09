@@ -94,15 +94,16 @@ public class UserService extends AbstractService<UserEntity> {
         validateStringField(entity.getName(), "User name");
         validateStringField(entity.getUsername(), "User username");
         validateStringField(entity.getEmail(), "User email");
+        validateStringField(entity.getPassword(), "User password");
         try {
             InternetAddress emailAddr = new InternetAddress(entity.getEmail());
             emailAddr.validate();
         } catch (AddressException ex) {
             throw new IllegalArgumentException("Email has invalid format: " + entity.getEmail());
         }
-        if (!entity.getPassword().matches(Constants.PASSWORD_PATTERN)) {
-            throw new IllegalArgumentException("Password has invalid format: " + entity.getPassword());
-        }
+        // if (!entity.getPassword().matches(Constants.PASSWORD_PATTERN)) {
+        //     throw new IllegalArgumentException("Password has invalid format: " + entity.getPassword());
+        // }
         validateStringField(entity.getPhoneNumber(), "User phone number");
         entity.setPhoneNumber(normalizePhoneNumber(entity.getPhoneNumber()));
         if (uniqueCheck) {

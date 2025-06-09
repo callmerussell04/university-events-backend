@@ -15,12 +15,23 @@ public class UserDto {
     private Long id;
 
     @NotBlank
-    @Size(min = 1, max = 30)
+    @Size(min = 1, max = 50)
     private String name;
+
+    @NotBlank
     private String email;
+
+    @NotBlank
+    @Size(min = 1, max = 30)
     private String username;
+
+    @NotBlank
+    @Size(min = 1, max = 15)
     private String phoneNumber;
+
     private String password;
+
+    @NotBlank
     private String role;
 
     @Min(1)
