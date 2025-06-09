@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 import com.university.university_events.events.model.EventEntity;
 import com.university.university_events.events.model.EventStatus;
@@ -31,6 +32,7 @@ import com.university.university_events.users.service.UserService;
 import com.university.university_events.core.utils.Formatter;
 
 @SpringBootApplication
+@EnableCaching
 public class UniversityEventsApplication implements CommandLineRunner {
 	private final Logger log = LoggerFactory.getLogger(UniversityEventsApplication.class);
 
@@ -67,10 +69,11 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			final var group3 = groupService.create(new GroupEntity("ПИбд-33", 3, faculty1));
 
             log.info("Create default user values");
-			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group1));
+			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group3));
 			userService.create(new UserEntity("Сергеев Сергей Сергеевич","sergeev@email.com", "sergeev.s", "+777777778", "Qwer1234!", UserRole.STUDENT, group2));
-			userService.create(new UserEntity("лох какой-то","loh@email.com", "loh.k", "+777777779", "Qwer1234!", UserRole.STUDENT, group3));
+			userService.create(new UserEntity("красавчик","anisinruslan16@gmail.com", "goat", "+777777779", "Qwer1234!", UserRole.STUDENT, group1));
 			userService.create(new UserEntity("нащальник","boss@email.com", "boss", "+7777777777", "Qwer1234!", UserRole.EMPLOYEE, null));
+			userService.create(new UserEntity("admin","admin@email.com", "admin", "+70000000000", "Admin1234!", UserRole.ADMIN, null));
 		
             log.info("Create default location values");
             final var location1 = locationService.create(new LocationEntity("Тарелка"));

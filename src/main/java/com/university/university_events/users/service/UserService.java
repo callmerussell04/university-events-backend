@@ -8,12 +8,18 @@ import jakarta.mail.internet.InternetAddress;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.university.university_events.core.configuration.Constants;
 import com.university.university_events.core.error.NotFoundException;
+import com.university.university_events.core.security.UserPrincipal;
 import com.university.university_events.core.service.AbstractService;
 import com.university.university_events.users.model.UserEntity;
 import com.university.university_events.users.model.UserRole;
@@ -22,9 +28,12 @@ import com.university.university_events.users.repository.UserRepository;
 @Service
 public class UserService extends AbstractService<UserEntity> {
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
+    
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +64,9 @@ public class UserService extends AbstractService<UserEntity> {
     @Transactional
     public UserEntity create(UserEntity entity) {
         validate(entity, true);
+        entity.setPassword(
+                passwordEncoder.encode(
+                        entity.getPassword().strip()));
         return repository.save(entity);
     }
 
@@ -64,7 +76,7 @@ public class UserService extends AbstractService<UserEntity> {
         final UserEntity existsEntity = get(id);
         existsEntity.setName(entity.getName());
         existsEntity.setEmail(entity.getEmail());
-        existsEntity.setLogin(entity.getLogin());
+        existsEntity.setUsername(entity.getUsername());
         existsEntity.setPhoneNumber(entity.getPhoneNumber());
         existsEntity.setPassword(entity.getPassword());
         existsEntity.setRole(entity.getRole());
@@ -85,7 +97,7 @@ public class UserService extends AbstractService<UserEntity> {
             throw new IllegalArgumentException("User entity is null");
         }
         validateStringField(entity.getName(), "User name");
-        validateStringField(entity.getLogin(), "User login");
+        validateStringField(entity.getUsername(), "User username");
         validateStringField(entity.getEmail(), "User email");
         try {
             InternetAddress emailAddr = new InternetAddress(entity.getEmail());

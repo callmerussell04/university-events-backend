@@ -13,6 +13,8 @@ import com.university.university_events.users.model.UserRole;
 
 public interface UserRepository extends CrudRepository<UserEntity, Long>, PagingAndSortingRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmailIgnoreCase(String email);
+    
+    Optional<UserEntity> findByUsername(String username);
 
     List<UserEntity> findByRole(UserRole role);
 

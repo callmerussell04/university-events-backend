@@ -18,7 +18,7 @@ public class UserDto {
     @Size(min = 1, max = 30)
     private String name;
     private String email;
-    private String login;
+    private String username;
     private String phoneNumber;
     private String password;
     private String role;

@@ -3,6 +3,7 @@ package com.university.university_events.users.api;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,13 +30,15 @@ public class UserController {
     private final UserService userService;
     private final ModelMapper modelMapper;
     BiMap<String, String> roleMap = HashBiMap.create();
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(UserService userService, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.modelMapper = modelMapper;
         roleMap.put("ADMIN", "Администратор");
         roleMap.put("EMPLOYEE", "Сотрудник");
         roleMap.put("STUDENT", "Студент");
+        this.passwordEncoder = passwordEncoder;
     }
 
     private UserDto toDto(UserEntity entity) {
@@ -68,6 +71,8 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@RequestBody @Valid UserDto dto) {
+        dto.setPassword(
+                passwordEncoder.encode(dto.getPassword().strip()));
         return toDto(userService.create(toEntity(dto)));
     }
 

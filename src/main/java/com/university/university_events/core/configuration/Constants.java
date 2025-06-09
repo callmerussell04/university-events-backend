@@ -11,9 +11,6 @@ public class Constants {
 
     public static final String ADMIN_PREFIX = "/admin";
 
-    public static final String LOGIN_URL = "/login";
-    public static final String LOGOUT_URL = "/logout";
-
     public static final String DEFAULT_PASSWORD = "1234";
 
     public static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*\\(\\)\\-_+=;:,\\./\\?\\\\|`~\\[\\]\\{\\}])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#\\$%\\^&\\*\\(\\)\\-_+=;:,\\./\\?\\\\|`~\\[\\]\\{\\}]{8,60}$";
