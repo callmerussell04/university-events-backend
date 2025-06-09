@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +32,16 @@ public class SecurityController {
     JwtUtils jwtUtils;
 
     @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
     OtpService otpService;
+
+    @Autowired
+    EmailService emailService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@Valid @RequestBody SigninRequestDto signinRequest) {
@@ -92,7 +99,6 @@ public class SecurityController {
         }
     }
 
-    // Новый эндпоинт для повторной отправки OTP
     @PostMapping("/resend-otp")
     public ResponseEntity<?> resendOtp(@Valid @RequestBody OtpResendRequestDto otpResendRequest) {
         UserEntity userEntity = userRepository.findByUsername(otpResendRequest.getUsername())
@@ -104,5 +110,80 @@ public class SecurityController {
 
         otpService.generateAndSendOtp(userEntity);
         return ResponseEntity.ok("New OTP sent to your email.");
+    }
+
+    // Шаг 1: Запрос сброса пароля (отправка OTP на почту)
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequestDto forgotPasswordRequest) {
+        UserEntity userEntity = userRepository.findByEmail(forgotPasswordRequest.getEmail())
+                .orElse(null);
+
+        if (userEntity == null) {
+            // Возвращаем общий успешный ответ, чтобы не давать подсказок злоумышленникам
+            // о существовании email в системе. Реальное письмо не отправляется.
+            return ResponseEntity.ok("Если аккаунт с таким email существует, OTP был отправлен.");
+        }
+
+        otpService.generateAndSendPasswordResetOtp(userEntity.getEmail());
+        return ResponseEntity.ok("Если аккаунт с таким email существует, OTP был отправлен.");
+    }
+
+    // Шаг 2: Подтверждение OTP для сброса пароля и получение временного токена сброса
+    @PostMapping("/verify-otp-for-reset")
+    public ResponseEntity<?> verifyOtpForReset(@Valid @RequestBody VerifyResetOtpRequestDto verifyRequest) {
+        UserEntity userEntity = userRepository.findByEmail(verifyRequest.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден для предоставленного email."));
+
+        if (!otpService.validatePasswordResetOtp(verifyRequest.getEmail(), verifyRequest.getOtp())) {
+            return ResponseEntity.badRequest().body("Неверный или истекший OTP для сброса пароля.");
+        }
+
+        // OTP успешно подтвержден, очищаем его из кэша
+        otpService.clearPasswordResetOtp(verifyRequest.getEmail());
+
+        // Генерируем и возвращаем временный токен сброса пароля
+        String resetToken = otpService.generateResetToken(userEntity.getEmail());
+        return ResponseEntity.ok(resetToken);
+    }
+
+    // Шаг 3: Установка нового пароля с использованием временного токена
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequestDto resetPasswordRequest) {
+        // Валидируем временный токен сброса
+        String userEmail = otpService.validateResetToken(resetPasswordRequest.getResetToken());
+
+        if (userEmail == null) {
+            return ResponseEntity.badRequest().body("Недействительный или истекший токен сброса пароля.");
+        }
+
+        UserEntity userEntity = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден для предоставленного email.")); // Маловероятно, но на всякий случай
+
+        // Токен успешно подтвержден, очищаем его из кэша
+        otpService.clearResetToken(resetPasswordRequest.getResetToken());
+
+        // Хэшируем новый пароль и сохраняем его
+        userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getNewPassword()));
+        userRepository.save(userEntity);
+
+        return ResponseEntity.ok("Пароль успешно сброшен.");
+    }
+
+    @PostMapping("/forgot-username")
+    public ResponseEntity<?> forgotUsername(@Valid @RequestBody ForgotUsernameRequestDto forgotUsernameRequest) {
+
+        UserEntity userEntity = userRepository.findByEmail(forgotUsernameRequest.getEmail())
+                .orElse(null); // Не бросаем исключение, чтобы не раскрывать информацию о существовании аккаунта
+
+        if (userEntity == null) {
+            // Возвращаем общий успешный ответ, чтобы не давать подсказок злоумышленникам
+            // о существовании email в системе. Реальное письмо не отправляется.
+            return ResponseEntity.ok("Если аккаунт с таким email существует, ваше имя пользователя было отправлено.");
+        }
+
+        // Отправляем имя пользователя асинхронно
+        emailService.sendUsernameReminderEmail(userEntity.getEmail(), userEntity.getUsername());
+
+        return ResponseEntity.ok("Если аккаунт с таким email существует, ваше имя пользователя было отправлено.");
     }
 }

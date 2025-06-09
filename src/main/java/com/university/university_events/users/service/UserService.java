@@ -8,18 +8,13 @@ import jakarta.mail.internet.InternetAddress;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.university.university_events.core.configuration.Constants;
 import com.university.university_events.core.error.NotFoundException;
-import com.university.university_events.core.security.UserPrincipal;
 import com.university.university_events.core.service.AbstractService;
 import com.university.university_events.users.model.UserEntity;
 import com.university.university_events.users.model.UserRole;
@@ -111,7 +106,7 @@ public class UserService extends AbstractService<UserEntity> {
         validateStringField(entity.getPhoneNumber(), "User phone number");
         entity.setPhoneNumber(normalizePhoneNumber(entity.getPhoneNumber()));
         if (uniqueCheck) {
-            if (repository.findByEmailIgnoreCase(entity.getName()).isPresent()) {
+            if (repository.findByEmail(entity.getName()).isPresent()) {
                 throw new IllegalArgumentException(
                         String.format("User with name %s already exists", entity.getName())
                 );

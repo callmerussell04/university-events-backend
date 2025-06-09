@@ -12,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.university.university_events.events.model.EventEntity;
 import com.university.university_events.events.model.EventStatus;
@@ -33,6 +34,7 @@ import com.university.university_events.core.utils.Formatter;
 
 @SpringBootApplication
 @EnableCaching
+@EnableAsync
 public class UniversityEventsApplication implements CommandLineRunner {
 	private final Logger log = LoggerFactory.getLogger(UniversityEventsApplication.class);
 
