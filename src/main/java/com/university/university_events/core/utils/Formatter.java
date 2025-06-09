@@ -8,7 +8,16 @@ public final class Formatter {
     private Formatter() {
     }
 
-    private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private static SimpleDateFormat dateFormatterWithTime = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+
+    public static String formatWithTime(Date date) {
+        return dateFormatterWithTime.format(date);
+    }
+
+    public static Date parseWithTime(String date) throws ParseException {
+        return dateFormatterWithTime.parse(date);
+    }
 
     public static String format(Date date) {
         return dateFormatter.format(date);

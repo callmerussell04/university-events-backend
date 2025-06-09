@@ -109,4 +109,8 @@ public class EventService extends AbstractService<EventEntity> {
             }
         }
     }
+    @Transactional(readOnly = true)
+    public List<Object[]> getEventStatistics(Date startDate, Date endDate) {
+        return repository.findEventStatisticsByPeriod(startDate, endDate);
+    }
 }

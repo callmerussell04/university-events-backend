@@ -1,5 +1,6 @@
 package com.university.university_events.events.repository;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -31,5 +32,20 @@ public interface EventRepository extends CrudRepository<EventEntity, Long>, Pagi
         @Param("endDate") Date endDate,
         @Param("name") String name,
         Pageable pageable
+    );
+
+    @Query("""
+      SELECT e,
+            COUNT(i.id),
+            SUM(CASE WHEN i.status = com.university.university_events.invitations.model.InvitationStatus.ATTENDED THEN 1 ELSE 0 END)
+      FROM EventEntity e
+      LEFT JOIN e.invitations i
+      WHERE e.startDateTime >= :startDate AND e.endDateTime <= :endDate
+      GROUP BY e
+      ORDER BY e.startDateTime
+      """)
+      List<Object[]> findEventStatisticsByPeriod(
+          @Param("startDate") Date startDate,
+          @Param("endDate") Date endDate
     );
 }
