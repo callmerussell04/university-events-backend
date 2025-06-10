@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.university.university_events.core.error.NotFoundException;
+import com.university.university_events.core.log.Loggable;
 import com.university.university_events.core.service.AbstractService;
 import com.university.university_events.groups.model.GroupEntity;
 import com.university.university_events.groups.repository.GroupRepository;
