@@ -2,6 +2,7 @@ package com.university.university_events.events.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 import org.springframework.data.domain.Page;
@@ -12,16 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.university.university_events.core.error.NotFoundException;
 import com.university.university_events.core.service.AbstractService;
+import com.university.university_events.core.service.NotificationService;
 import com.university.university_events.events.model.EventEntity;
 import com.university.university_events.events.model.EventStatus;
 import com.university.university_events.events.repository.EventRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class EventService extends AbstractService<EventEntity> {
     private final EventRepository repository;
+    private final NotificationService notificationService;
 
-    public EventService(EventRepository repository) {
+    public EventService(EventRepository repository, NotificationService notificationService) {
         this.repository = repository;
+        this.notificationService = notificationService;
     }
 
     public boolean isValidEventStatus(String status) {
@@ -62,17 +68,25 @@ public class EventService extends AbstractService<EventEntity> {
         return repository.save(entity);
     }
 
-    @Transactional
     public EventEntity update(Long id, EventEntity entity) {
-        validate(entity, false);
-        final EventEntity existsEntity = get(id);
-        existsEntity.setName(entity.getName());
-        existsEntity.setStatus(entity.getStatus());
-        existsEntity.setStartDateTime(entity.getStartDateTime());
-        existsEntity.setEndDateTime(entity.getEndDateTime());
-        existsEntity.setLocation(entity.getLocation());
-        existsEntity.setOrganizer(entity.getOrganizer());
-        return repository.save(existsEntity);
+        return repository.findById(id).map(existsEntity -> {
+            EventStatus oldStatus = existsEntity.getStatus();
+
+            existsEntity.setName(entity.getName());
+            existsEntity.setStatus(entity.getStatus());
+            existsEntity.setStartDateTime(entity.getStartDateTime());
+            existsEntity.setEndDateTime(entity.getEndDateTime());
+            existsEntity.setLocation(entity.getLocation());
+            existsEntity.setOrganizer(entity.getOrganizer());
+
+            EventEntity savedEvent = repository.save(existsEntity);
+
+            if (!Objects.equals(oldStatus, savedEvent.getStatus()) &&
+                (savedEvent.getStatus() == EventStatus.ACTIVE || savedEvent.getStatus() == EventStatus.CANCELED)) {
+                notificationService.sendEventStatusChangeNotification(savedEvent);
+            }
+            return savedEvent;
+        }).orElseThrow(() -> new EntityNotFoundException("Event with id " + id + " not found"));
     }
 
     @Transactional

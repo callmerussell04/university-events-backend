@@ -38,4 +38,7 @@ public class UserEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "groupId")
     private GroupEntity group;
+
+    @Column(length = 255)
+    private String deviceToken;
 }

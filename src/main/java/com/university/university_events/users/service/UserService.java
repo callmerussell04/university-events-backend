@@ -127,4 +127,13 @@ public class UserService extends AbstractService<UserEntity> {
         }
         return cleaned;
     }
+
+    @Transactional
+    public void updateDeviceToken(Long userId, String deviceToken) {
+        UserEntity user = repository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(UserEntity.class, userId));
+        user.setDeviceToken(deviceToken);
+        repository.save(user);
+        System.out.println("Device token updated for user " + userId + ": " + deviceToken);
+    }
 }

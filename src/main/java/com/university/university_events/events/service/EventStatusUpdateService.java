@@ -1,8 +1,10 @@
+// packages/com/university/university_events/events/service/EventStatusUpdateService.java
 package com.university.university_events.events.service;
 
 import com.university.university_events.events.model.EventEntity;
 import com.university.university_events.events.model.EventStatus;
-import com.university.university_events.events.repository.EventRepository; // You'll need this
+import com.university.university_events.events.repository.EventRepository;
+import com.university.university_events.core.service.NotificationService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,11 @@ import java.util.List;
 public class EventStatusUpdateService {
 
     private final EventRepository eventRepository;
+    private final NotificationService notificationService;
 
-    public EventStatusUpdateService(EventRepository eventRepository) {
+    public EventStatusUpdateService(EventRepository eventRepository, NotificationService notificationService) {
         this.eventRepository = eventRepository;
+        this.notificationService = notificationService;
     }
 
     @Scheduled(fixedRate = 60000)
@@ -28,6 +32,7 @@ public class EventStatusUpdateService {
                 event.setStatus(EventStatus.ACTIVE);
                 eventRepository.save(event);
                 System.out.println("Event " + event.getName() + " is now ACTIVE.");
+                notificationService.sendEventStatusChangeNotification(event);
             }
         });
 

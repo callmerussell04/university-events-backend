@@ -3,6 +3,8 @@ package com.university.university_events.users.api;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,5 +99,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     public UserDto delete(@PathVariable(name = "id") Long id) {
         return toDto(userService.delete(id));
+    }
+
+    @PostMapping("/{id}/device-token")
+    public ResponseEntity<Void> updateDeviceToken(@PathVariable(name = "id") Long id, @RequestBody @Valid DeviceTokenDto dto) {
+        userService.updateDeviceToken(id, dto.getDeviceToken());
+        return ResponseEntity.ok().build();
     }
 }

@@ -39,4 +39,6 @@ public class UserDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String groupName;
+
+    private String deviceToken;
 }

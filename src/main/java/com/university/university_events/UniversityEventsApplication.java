@@ -73,11 +73,11 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			final var group3 = groupService.create(new GroupEntity("ПИбд-33", 3, faculty1));
 
             log.info("Create default user values");
-			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group3));
-			userService.create(new UserEntity("Сергеев Сергей Сергеевич","sergeev@email.com", "sergeev.s", "+777777778", "Qwer1234!", UserRole.STUDENT, group2));
-			userService.create(new UserEntity("красавчик","anisinruslan16@gmail.com", "goat", "+777777779", "Qwer1234!", UserRole.STUDENT, group1));
-			userService.create(new UserEntity("нащальник","boss@email.com", "boss", "+7777777777", "Qwer1234!", UserRole.EMPLOYEE, null));
-			userService.create(new UserEntity("admin","admin@email.com", "admin", "+70000000000", "Admin1234!", UserRole.ADMIN, null));
+			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group3, null));
+			userService.create(new UserEntity("Сергеев Сергей Сергеевич","sergeev@email.com", "sergeev.s", "+777777778", "Qwer1234!", UserRole.STUDENT, group2, null));
+			userService.create(new UserEntity("красавчик","anisinruslan16@gmail.com", "goat", "+777777779", "Qwer1234!", UserRole.STUDENT, group1, null));
+			userService.create(new UserEntity("нащальник","boss@email.com", "boss", "+7777777777", "Qwer1234!", UserRole.EMPLOYEE, null, null));
+			userService.create(new UserEntity("admin","admin@email.com", "admin", "+70000000000", "Admin1234!", UserRole.ADMIN, null, null));
 		
             log.info("Create default location values");
             final var location1 = locationService.create(new LocationEntity("Тарелка"));
