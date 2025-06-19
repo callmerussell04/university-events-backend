@@ -41,4 +41,7 @@ public class UserEntity extends BaseEntity {
 
     @Column(length = 255)
     private String deviceToken;
+
+    @Column(length = 255, unique = true)
+    private String telegramChatId;
 }

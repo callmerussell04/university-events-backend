@@ -20,7 +20,7 @@ public class EmailService {
     public void sendOtpEmail(String toEmail, String otp) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("carrepairshoplab7@gmail.com");
+            message.setFrom("uni341026@gmail.com");
             message.setTo(toEmail);
             message.setSubject("Ваш одноразовый пароль (OTP) для входа");
             message.setText("Здравствуйте,\n\nВаш одноразовый пароль (OTP) для входа: " + otp + "\n\nЭтот код действителен в течение 5 минут. Не делитесь им ни с кем.");
@@ -35,7 +35,7 @@ public class EmailService {
     public void sendPasswordResetOtpEmail(String toEmail, String otp) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("carrepairshoplab7@gmail.com");
+            message.setFrom("uni341026@gmail.com");
             message.setTo(toEmail);
             message.setSubject("Сброс пароля - Ваш одноразовый пароль (OTP)");
             message.setText("Здравствуйте,\n\nВы запросили сброс пароля. Ваш одноразовый пароль (OTP) для сброса: " + otp + "\n\nЭтот код действителен в течение 5 минут. Пожалуйста, используйте его для установки нового пароля. Не делитесь им ни с кем.\n\nЕсли вы не запрашивали сброс пароля, проигнорируйте это письмо.");
@@ -50,7 +50,7 @@ public class EmailService {
     public void sendUsernameReminderEmail(String toEmail, String username) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("carrepairshoplab7@gmail.com");
+            message.setFrom("uni341026@gmail.com");
             message.setTo(toEmail);
             message.setSubject("Напоминание о вашем имени пользователя");
             message.setText("Здравствуйте,\n\nВы запросили напоминание о вашем имени пользователя.\n\nВаше имя пользователя: " + username + "\n\nЕсли вы не запрашивали это напоминание, проигнорируйте это письмо.\n\nСпасибо,\nКоманда University Events");

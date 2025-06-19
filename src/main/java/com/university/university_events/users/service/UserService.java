@@ -1,6 +1,7 @@
 package com.university.university_events.users.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import jakarta.mail.internet.AddressException;
@@ -135,5 +136,10 @@ public class UserService extends AbstractService<UserEntity> {
         user.setDeviceToken(deviceToken);
         repository.save(user);
         System.out.println("Device token updated for user " + userId + ": " + deviceToken);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<UserEntity> findByUsername(String username) {
+        return repository.findByUsername(username);
     }
 }

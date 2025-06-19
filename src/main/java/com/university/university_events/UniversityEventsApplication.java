@@ -12,8 +12,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.client.RestTemplate;
 
 import com.university.university_events.events.model.EventEntity;
 import com.university.university_events.events.model.EventStatus;
@@ -73,11 +75,11 @@ public class UniversityEventsApplication implements CommandLineRunner {
 			final var group3 = groupService.create(new GroupEntity("ПИбд-33", 3, faculty1));
 
             log.info("Create default user values");
-			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234!", UserRole.STUDENT, group3, null));
-			userService.create(new UserEntity("Сергеев Сергей Сергеевич","sergeev@email.com", "sergeev.s", "+777777778", "Qwer1234!", UserRole.STUDENT, group2, null));
-			userService.create(new UserEntity("красавчик","anisinruslan16@gmail.com", "goat", "+777777779", "Qwer1234!", UserRole.STUDENT, group1, null));
-			userService.create(new UserEntity("нащальник","boss@email.com", "boss", "+7777777777", "Qwer1234!", UserRole.EMPLOYEE, null, null));
-			userService.create(new UserEntity("admin","admin@email.com", "admin", "+70000000000", "Admin1234!", UserRole.ADMIN, null, null));
+			userService.create(new UserEntity("Иванов Иван Иванович", "ivanov@email.com", "ivanov.i", "+777777777", "Qwer1234", UserRole.STUDENT, group3, null, null));
+			userService.create(new UserEntity("Сергеев Сергей Сергеевич","sergeev@email.com", "sergeev.s", "+777777778", "Qwer1234", UserRole.STUDENT, group2, null, null));
+			userService.create(new UserEntity("красавчик","anisinruslan16@gmail.com", "goat", "+777777779", "Qwer1234", UserRole.STUDENT, group1, null, null));
+			userService.create(new UserEntity("Сотрудник","employee@email.com", "employee", "+7777777777", "Qwer1234", UserRole.EMPLOYEE, null, null, null));
+			userService.create(new UserEntity("admin","admin@email.com", "admin", "+70000000000", "Admin1234", UserRole.ADMIN, null, null, null));
 		
             log.info("Create default location values");
             final var location1 = locationService.create(new LocationEntity("Тарелка"));
@@ -86,13 +88,14 @@ public class UniversityEventsApplication implements CommandLineRunner {
             final var location4 = locationService.create(new LocationEntity("Аудитория 3"));
 			
             log.info("Create default event values");
-			eventService.create(new EventEntity("мероприятие 1", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-11 10:00"), Formatter.parseWithTime("2025-06-11 10:40"), "организатор", location1, null));
-			eventService.create(new EventEntity("мероприятие 2", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-11 10:00"), Formatter.parseWithTime("2025-06-11 10:40"), "организатор", location2, null));
-			eventService.create(new EventEntity("мероприятие 3", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-12 10:00"), Formatter.parseWithTime("2025-06-12 11:30"), "организатор", location1, null));
-			eventService.create(new EventEntity("мероприятие 4", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-11 10:00"), Formatter.parseWithTime("2025-06-11 10:40"), "организатор", location3, null));
-			eventService.create(new EventEntity("мероприятие 5", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-13 10:00"), Formatter.parseWithTime("2025-06-13 10:40"), "организатор", location4, null));
-			eventService.create(new EventEntity("мероприятие 6", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-13 10:00"), Formatter.parseWithTime("2025-06-13 10:30"), "организатор", location4, null));
-			eventService.create(new EventEntity("мероприятие 7", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-13 10:00"), Formatter.parseWithTime("2025-06-13 10:50"), "организатор", location3, null));
+			eventService.create(new EventEntity("мероприятие 1", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-20 10:00"), Formatter.parseWithTime("2025-06-20 10:40"), "организатор", location1, null));
+			eventService.create(new EventEntity("мероприятие 2", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-20 10:00"), Formatter.parseWithTime("2025-06-20 10:40"), "организатор", location2, null));
+			eventService.create(new EventEntity("мероприятие 3", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-21 10:00"), Formatter.parseWithTime("2025-06-21 11:30"), "организатор", location1, null));
+			eventService.create(new EventEntity("мероприятие 4", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-20 10:00"), Formatter.parseWithTime("2025-06-20 10:40"), "организатор", location3, null));
+			eventService.create(new EventEntity("мероприятие 5", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-22 10:00"), Formatter.parseWithTime("2025-06-22 10:40"), "организатор", location4, null));
+			eventService.create(new EventEntity("мероприятие 6", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-22 10:00"), Formatter.parseWithTime("2025-06-22 10:30"), "организатор", location4, null));
+			eventService.create(new EventEntity("мероприятие 7", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-22 10:00"), Formatter.parseWithTime("2025-06-22 10:50"), "организатор", location3, null));
+			eventService.create(new EventEntity("мероприятие 8", EventStatus.PLANNED, Formatter.parseWithTime("2025-06-19 22:40"), Formatter.parseWithTime("2025-06-19 22:50"), "организатор", location3, null));
 
 			SurveyEntity surveyEntity = new SurveyEntity();
 			surveyEntity.setName("анкета 1");

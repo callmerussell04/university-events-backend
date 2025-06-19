@@ -68,6 +68,8 @@ public class SecurityConfiguration {
 
         httpSecurity.authorizeHttpRequests(requests -> requests
                 .requestMatchers(Constants.API_URL + "/auth/**").permitAll()
+                .requestMatchers(HttpMethod.POST, Constants.API_URL + "/support-ticket").permitAll()
+                .requestMatchers(HttpMethod.POST, Constants.API_URL + "/user/link-telegram").hasAnyRole(UserRole.ADMIN.name(), UserRole.EMPLOYEE.name(), UserRole.STUDENT.name())
                 .requestMatchers(HttpMethod.POST, Constants.API_URL + "/user/*/device-token").hasAnyRole(UserRole.ADMIN.name(), UserRole.EMPLOYEE.name(), UserRole.STUDENT.name())
                 .requestMatchers(HttpMethod.GET, Constants.API_URL + "/event/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.EMPLOYEE.name(), UserRole.STUDENT.name())
                 .requestMatchers(HttpMethod.GET, Constants.API_URL + "/survey/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.EMPLOYEE.name(), UserRole.STUDENT.name())

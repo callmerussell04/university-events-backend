@@ -1,5 +1,6 @@
 package com.university.university_events.users.api;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -105,5 +106,19 @@ public class UserController {
     public ResponseEntity<Void> updateDeviceToken(@PathVariable(name = "id") Long id, @RequestBody @Valid DeviceTokenDto dto) {
         userService.updateDeviceToken(id, dto.getDeviceToken());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/link-telegram")
+    public ResponseEntity<String> linkTelegramChatId(
+            @RequestBody @Valid UserUpdateTelegramDto dto) {
+        try {
+            UserEntity user = userService.get(dto.getUserId());
+            user.setTelegramChatId(dto.getTelegramChatId());
+            userService.update(dto.getUserId(), user);
+
+            return ResponseEntity.ok("Telegram Chat ID linked successfully for user: " + user.getUsername());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error linking Telegram Chat ID: " + e.getMessage());
+        }
     }
 }
